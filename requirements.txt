@@ -1,0 +1,178 @@
+# Neovim Configuration Requirements
+
+## Required Software
+
+### 1. Neovim (>= 0.9.0)
+# Install via Homebrew on macOS:
+brew install neovim
+
+### 2. Git
+# Required for plugin management
+brew install git
+
+### 3. Node.js and npm
+# Required for LSP servers and some plugins
+brew install node
+
+### 4. Python 3
+# Required for some plugins
+brew install python3
+pip3 install pynvim
+
+### 5. Ripgrep
+# Required for telescope file searching
+brew install ripgrep
+
+### 6. fd
+# Better file finder for telescope
+brew install fd
+
+### 7. Go Language Server (gopls)
+# Required for Go development
+go install golang.org/x/tools/gopls@latest
+
+### 8. Go Tools
+# Additional Go development tools
+go install github.com/go-delve/delve/cmd/dlv@latest
+go install golang.org/x/tools/cmd/goimports@latest
+go install mvdan.cc/gofumpt@latest
+
+### 9. Other Language Servers (Optional)
+# Install based on your development needs:
+
+# TypeScript/JavaScript
+npm install -g typescript-language-server
+npm install -g @vtsls/language-server
+
+# Python
+pip3 install python-lsp-server
+
+# Lua
+brew install lua-language-server
+
+# JSON
+npm install -g vscode-langservers-extracted
+
+# YAML
+npm install -g yaml-language-server
+
+### 10. Formatters
+# Code formatting tools
+npm install -g prettier
+pip3 install black
+pip3 install isort
+
+### 11. Linters
+# Code linting tools
+npm install -g eslint
+pip3 install flake8
+
+## Installation Steps
+
+1. **Backup existing Neovim configuration (if any):**
+   ```bash
+   mv ~/.config/nvim ~/.config/nvim.backup
+   ```
+
+2. **Clone this configuration:**
+   ```bash
+   git clone <your-repo-url> ~/.config/nvim
+   cd ~/.config/nvim
+   ```
+
+3. **Install required system dependencies:**
+   ```bash
+   # Install Homebrew (if not already installed)
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   
+   # Install core dependencies
+   brew install neovim git node python3 ripgrep fd lua-language-server
+   
+   # Install Python support
+   pip3 install pynvim
+   ```
+
+4. **Install Go and Go tools:**
+   ```bash
+   # Install Go
+   brew install go
+   
+   # Install Go language server and tools
+   go install golang.org/x/tools/gopls@latest
+   go install github.com/go-delve/delve/cmd/dlv@latest
+   go install golang.org/x/tools/cmd/goimports@latest
+   go install mvdan.cc/gofumpt@latest
+   ```
+
+5. **Install Node.js packages:**
+   ```bash
+   npm install -g typescript-language-server @vtsls/language-server
+   npm install -g vscode-langservers-extracted yaml-language-server
+   npm install -g prettier eslint
+   ```
+
+6. **Install Python packages:**
+   ```bash
+   pip3 install python-lsp-server black isort flake8
+   ```
+
+7. **Start Neovim and let plugins install:**
+   ```bash
+   nvim
+   ```
+   
+   The Lazy plugin manager will automatically install all plugins on first startup.
+
+8. **Verify installation:**
+   - Open Neovim
+   - Run `:checkhealth` to verify all components are working
+   - Run `:Lazy` to see plugin status
+   - Run `:LspInfo` to check LSP servers
+
+## Key Features Included
+
+- **Plugin Manager:** Lazy.nvim for fast plugin loading
+- **LSP Support:** Full Language Server Protocol integration
+- **Go Development:** Comprehensive Go support with gopls, debugging, and testing
+- **File Explorer:** Neo-tree for file management
+- **Fuzzy Finder:** Telescope for file and text searching
+- **Terminal:** Toggleterm for integrated terminal support
+- **Diagnostics:** Trouble.nvim for error management
+- **Syntax Highlighting:** Treesitter for advanced syntax highlighting
+- **Auto-completion:** nvim-cmp with multiple sources
+- **Git Integration:** Gitsigns for git status in editor
+- **Code Formatting:** Conform.nvim with multiple formatters
+
+## Troubleshooting
+
+1. **If plugins don't install:**
+   ```bash
+   nvim --headless -c 'lua require("lazy").sync()' -c 'qa'
+   ```
+
+2. **If LSP doesn't work:**
+   - Check `:LspInfo` for server status
+   - Ensure language servers are in PATH
+   - Run `:checkhealth lsp` for diagnostics
+
+3. **If Go tools don't work:**
+   - Ensure `$GOPATH/bin` is in your PATH
+   - Verify Go installation: `go version`
+   - Check gopls: `gopls version`
+
+## Key Bindings
+
+- `<leader>` = Space key
+- `<leader>tf` - Toggle floating terminal
+- `<leader>th` - Toggle horizontal terminal
+- `<leader>tv` - Toggle vertical terminal
+- `<leader>dr` - Split terminal horizontally
+- `<Ctrl+t>` - Toggle floating terminal
+- `<Ctrl+\>` - Toggle floating terminal
+- `<leader>xx` - Show project diagnostics
+- `<leader>xX` - Show buffer diagnostics
+- `<leader>ff` - Find files
+- `<leader>fg` - Live grep
+- `<leader>e` - Toggle file explorer
+
+For a complete list of keybindings, check the mappings.lua file.
