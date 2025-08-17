@@ -17,9 +17,13 @@ local options = {
     -- css = { "prettier" },
     -- html = { "prettier" },
     
-    -- Additional formatters can be added here:
-    -- python = { "black", "isort" },     -- Python: Black + isort
-    -- go = { "gofumpt", "goimports" },   -- Go: gofumpt + goimports
+    -- Python formatting using Black and isort
+    python = { "black", "isort" },
+    
+    -- Go formatting using gofumpt and goimports
+    go = { "gofumpt", "goimports" },
+    
+    -- Additional formatters (commented out by default):
     -- javascript = { "prettier" },       -- JavaScript: Prettier
     -- typescript = { "prettier" },       -- TypeScript: Prettier
     -- json = { "prettier" },             -- JSON: Prettier
