@@ -12,8 +12,10 @@ local M = {}
 -- THEME CONFIGURATION
 -- ============================================================================
 M.base46 = {
-	-- Set the color scheme to OneDark theme
-	theme = "onedark",
+	-- Set the color scheme
+	-- Popular themes: "onedark", "catppuccin", "tokyonight", "gruvbox", "nord", "nightfox"
+	-- To see all available themes, use :Telescope themes in Neovim
+	theme = "catppuccin",
 
 	-- Highlight overrides for custom styling (currently disabled)
 	-- Uncomment to enable italic comments

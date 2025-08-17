@@ -70,6 +70,24 @@ map("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" })
 map("n", "<leader>dm", "<cmd>!python manage.py makemigrations<CR>", { desc = "Django makemigrations" })
 map("n", "<leader>dM", "<cmd>!python manage.py migrate<CR>", { desc = "Django migrate" })
 map("n", "<leader>dr", "<cmd>split | terminal python manage.py runserver<CR>", { desc = "Django runserver in terminal" })
+map("n", "<leader>dR", function()
+  -- Close any existing terminal buffers running Django
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) then
+      local buf_name = vim.api.nvim_buf_get_name(buf)
+      if buf_name:match("term://.*python.*manage%.py.*runserver") then
+        vim.api.nvim_buf_delete(buf, { force = true })
+      end
+    end
+  end
+  -- Kill existing Django server processes
+  vim.cmd("!pkill -f 'python.*manage.py.*runserver' 2>/dev/null || true")
+  -- Wait a moment for the process to fully terminate
+  vim.cmd("!sleep 2")
+  -- Kill any process using port 8000 (default Django port)
+  vim.cmd("!lsof -ti:8000 | xargs kill -9 2>/dev/null || true")
+  vim.cmd("split | terminal python manage.py runserver")
+end, { desc = "Django restart server" })
 map("n", "<leader>ds", "<cmd>!python manage.py shell<CR>", { desc = "Django shell" })
 map("n", "<leader>dt", "<cmd>!python manage.py test<CR>", { desc = "Django test" })
 map("n", "<leader>dc", "<cmd>!python manage.py collectstatic<CR>", { desc = "Django collectstatic" })
