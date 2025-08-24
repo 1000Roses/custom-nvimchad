@@ -54,6 +54,16 @@ map("n", "<leader>se", "<C-w>=", { desc = "Make split windows equal width" })
 map("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split window" })
 map("n", "<leader>sm", ":MaximizerToggle<CR>", { desc = "Maximize current split window" })
 
+-- Fix for explorer after maximizing - restore before toggling explorer
+map("n", "<leader>e", function()
+  -- If maximizer is active, restore first
+  if vim.t.maximizer_sizes then
+    vim.cmd("MaximizerToggle")
+  end
+  -- Then toggle the file explorer
+  vim.cmd("NvimTreeToggle")
+end, { desc = "Toggle file explorer (restore maximizer first)" })
+
 -- ============================================================================
 -- TAB MANAGEMENT KEYMAPS
 -- ============================================================================
@@ -99,8 +109,7 @@ map("n", "<leader>dsu", "<cmd>!python manage.py createsuperuser<CR>", { desc = "
 -- Toggle database UI for database management
 map("n", "<leader>db", "<cmd>DBUIToggle<CR>", { desc = "Toggle Database UI" })
 
--- Generate Python docstrings automatically
-map("n", "<leader>pd", ":Pydocstring<CR>", { desc = "Generate Python docstring" })
+
 
 -- ============================================================================
 -- GO DEVELOPMENT SHORTCUTS
@@ -116,6 +125,38 @@ map("n", "<leader>gi", "<cmd>GoImport<CR>", { desc = "Go organize imports" })
 map("n", "<leader>gd", "<cmd>GoDoc<CR>", { desc = "Go show documentation" })
 map("n", "<leader>gl", "<cmd>GoLint<CR>", { desc = "Go lint code" })
 map("n", "<leader>gv", "<cmd>GoVet<CR>", { desc = "Go vet (static analysis)" })
+
+-- ============================================================================
+-- ERROR NAVIGATION AND QUICK FIXES
+-- ============================================================================
+-- Enhanced error navigation with quick access to definitions and implementations
+map("n", "<leader>ed", function()
+  -- Go to definition from error location
+  vim.lsp.buf.definition()
+end, { desc = "Go to definition from error" })
+
+map("n", "<leader>ei", function()
+  -- Go to implementation from error location
+  vim.lsp.buf.implementation()
+end, { desc = "Go to implementation from error" })
+
+map("n", "<leader>ef", function()
+  -- Show error details and quick fix options
+  vim.diagnostic.open_float()
+  vim.defer_fn(function()
+    vim.lsp.buf.code_action()
+  end, 100)
+end, { desc = "Show error details and quick fixes" })
+
+map("n", "<leader>er", function()
+  -- Go to references from error location
+  vim.lsp.buf.references()
+end, { desc = "Go to references from error" })
+
+-- Quick error navigation
+map("n", "<leader>en", "<cmd>lua vim.diagnostic.goto_next()<CR>", { desc = "Next error" })
+map("n", "<leader>ep", "<cmd>lua vim.diagnostic.goto_prev()<CR>", { desc = "Previous error" })
+map("n", "<leader>el", "<cmd>lua vim.diagnostic.setloclist()<CR>", { desc = "List all errors" })
 
 -- ============================================================================
 -- ADDITIONAL SHORTCUTS (COMMENTED)

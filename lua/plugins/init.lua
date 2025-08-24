@@ -27,6 +27,17 @@ return {
   },
 
   -- ============================================================================
+  -- COMPLETION ENGINE
+  -- ============================================================================
+  {
+    "hrsh7th/nvim-cmp",
+    opts = function()
+      return require "configs.cmp"
+    end,
+    desc = "Custom completion configuration with Shift+j/k and arrow key navigation"
+  },
+
+  -- ============================================================================
   -- SYNTAX HIGHLIGHTING AND PARSING
   -- ============================================================================
   {
@@ -61,15 +72,7 @@ return {
     desc = "PEP 8 compliant Python indentation"
   },
 
-  {
-    "heavenshell/vim-pydocstring",
-    ft = "python",
-    build = "make install",
-    config = function()
-      vim.g.pydocstring_formatter = "google"  -- Use Google-style docstrings
-    end,
-    desc = "Automatic Python docstring generation"
-  },
+
 
   -- ============================================================================
   -- DATABASE MANAGEMENT
