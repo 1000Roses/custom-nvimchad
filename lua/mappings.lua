@@ -20,6 +20,16 @@ map("n", ";", ":", { desc = "CMD enter command mode" })
 -- Quick escape from insert mode
 map("i", "jk", "<ESC>", { desc = "Exit insert mode" })
 
+-- Character navigation shortcuts
+-- 'b' + character: go backward to character (similar to 't' for forward)
+map("n", "b", function()
+  local char = vim.fn.getchar()
+  if char then
+    local char_str = vim.fn.nr2char(char)
+    vim.cmd("normal! F" .. char_str)
+  end
+end, { desc = "Go backward to character" })
+
 -- ============================================================================
 -- LSP (LANGUAGE SERVER PROTOCOL) KEYMAPS
 -- ============================================================================
@@ -157,6 +167,112 @@ end, { desc = "Go to references from error" })
 map("n", "<leader>en", "<cmd>lua vim.diagnostic.goto_next()<CR>", { desc = "Next error" })
 map("n", "<leader>ep", "<cmd>lua vim.diagnostic.goto_prev()<CR>", { desc = "Previous error" })
 map("n", "<leader>el", "<cmd>lua vim.diagnostic.setloclist()<CR>", { desc = "List all errors" })
+
+-- ============================================================================
+-- FUNCTION NAME DISPLAY
+-- ============================================================================
+map("n", "<leader>fn", function()
+  local winbar_enabled = vim.g.winbar_function_enabled
+  if winbar_enabled == nil then winbar_enabled = true end
+  
+  vim.g.winbar_function_enabled = not winbar_enabled
+  
+  if vim.g.winbar_function_enabled then
+    require("configs.winbar").setup()
+    print("Function name display enabled")
+  else
+    vim.wo.winbar = nil
+    print("Function name display disabled")
+  end
+end, { desc = "Toggle file name and function display in winbar" })
+
+-- ============================================================================
+-- TELESCOPE SEARCH SHORTCUTS
+-- ============================================================================
+-- File search with <space>ff
+map("n", "<space>ff", function()
+  require('telescope.builtin').find_files()
+end, { desc = "Find files" })
+
+-- Text search with <space>fs
+map("n", "<space>fs", function()
+  require('telescope.builtin').live_grep()
+end, { desc = "Search text in files" })
+
+-- ============================================================================
+-- DEBUGGING (DAP) SHORTCUTS
+-- ============================================================================
+-- Toggle breakpoint
+map("n", "<leader>db", function()
+  require("dap").toggle_breakpoint()
+end, { desc = "Toggle breakpoint" })
+
+-- Set conditional breakpoint
+map("n", "<leader>dB", function()
+  require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+end, { desc = "Set conditional breakpoint" })
+
+-- Continue debugging
+map("n", "<leader>dc", function()
+  require("dap").continue()
+end, { desc = "Continue debugging" })
+
+-- Step over
+map("n", "<leader>ds", function()
+  require("dap").step_over()
+end, { desc = "Step over" })
+
+-- Step into
+map("n", "<leader>di", function()
+  require("dap").step_into()
+end, { desc = "Step into" })
+
+-- Step out
+map("n", "<leader>do", function()
+  require("dap").step_out()
+end, { desc = "Step out" })
+
+-- Open REPL
+map("n", "<leader>dr", function()
+  require("dap").repl.open()
+end, { desc = "Open REPL" })
+
+-- Run last debug session
+map("n", "<leader>dl", function()
+  require("dap").run_last()
+end, { desc = "Run last debug session" })
+
+-- Terminate debug session
+map("n", "<leader>dt", function()
+  require("dap").terminate()
+end, { desc = "Terminate debug session" })
+
+-- Toggle debug UI
+map("n", "<leader>du", function()
+  require("dapui").toggle()
+end, { desc = "Toggle debug UI" })
+
+-- Evaluate expression
+map("n", "<leader>de", function()
+  require("dapui").eval()
+end, { desc = "Evaluate expression" })
+
+-- Evaluate selection in visual mode
+map("v", "<leader>de", function()
+  require("dapui").eval()
+end, { desc = "Evaluate selection" })
+
+-- Telescope-specific keymaps for search input
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "TelescopePrompt",
+  callback = function()
+    local opts = { buffer = true, silent = true }
+    -- Cmd+A to select all in telescope search
+    vim.keymap.set("i", "<D-a>", "<C-a>", opts)
+    -- Alternative: Ctrl+A to select all
+    vim.keymap.set("i", "<C-a>", "<C-a>", opts)
+  end,
+})
 
 -- ============================================================================
 -- ADDITIONAL SHORTCUTS (COMMENTED)

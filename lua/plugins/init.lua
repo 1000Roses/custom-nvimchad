@@ -417,6 +417,142 @@ return {
   },
 
   -- ============================================================================
+  -- DEBUGGING (DAP - Debug Adapter Protocol)
+  -- ============================================================================
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "theHamsta/nvim-dap-virtual-text",
+      "nvim-neotest/nvim-nio",
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      
+      -- Setup DAP UI
+      dapui.setup({
+        layouts = {
+          {
+            elements = {
+              { id = "scopes", size = 0.25 },
+              { id = "breakpoints", size = 0.25 },
+              { id = "stacks", size = 0.25 },
+              { id = "watches", size = 0.25 },
+            },
+            size = 40,
+            position = "left",
+          },
+          {
+            elements = {
+              { id = "repl", size = 0.5 },
+              { id = "console", size = 0.5 },
+            },
+            size = 10,
+            position = "bottom",
+          },
+        },
+      })
+      
+      -- Setup virtual text
+      require("nvim-dap-virtual-text").setup()
+      
+      -- Auto open/close DAP UI
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+    end,
+    desc = "Debug Adapter Protocol for debugging with breakpoints and UI"
+  },
+
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    config = function()
+      local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(path)
+      
+      -- Add Django-specific debug configurations
+      local dap = require("dap")
+      table.insert(dap.configurations.python, {
+        type = "python",
+        request = "launch",
+        name = "Django: Debug Server",
+        program = vim.fn.getcwd() .. "/manage.py",
+        args = { "runserver", "--noreload" },
+        django = true,
+        justMyCode = false,
+        console = "integratedTerminal",
+      })
+      
+      table.insert(dap.configurations.python, {
+        type = "python",
+        request = "launch",
+        name = "Django: Debug Tests",
+        program = vim.fn.getcwd() .. "/manage.py",
+        args = { "test" },
+        django = true,
+        justMyCode = false,
+        console = "integratedTerminal",
+      })
+      
+      table.insert(dap.configurations.python, {
+        type = "python",
+        request = "launch",
+        name = "Django: Debug Management Command",
+        program = vim.fn.getcwd() .. "/manage.py",
+        args = function()
+          local command = vim.fn.input("Management command: ")
+          return vim.split(command, " ")
+        end,
+        django = true,
+        justMyCode = false,
+        console = "integratedTerminal",
+      })
+      
+      table.insert(dap.configurations.python, {
+        type = "python",
+        request = "attach",
+        name = "Django: Attach to Running Server",
+        connect = {
+          host = "127.0.0.1",
+          port = 5678,
+        },
+        pathMappings = {
+          {
+            localRoot = vim.fn.getcwd(),
+            remoteRoot = ".",
+          },
+        },
+        django = true,
+        justMyCode = false,
+      })
+    end,
+    desc = "Python debugging support with debugpy"
+  },
+
+  {
+    "leoluz/nvim-dap-go",
+    ft = "go",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    config = function()
+      require("dap-go").setup()
+    end,
+    desc = "Go debugging support with delve"
+  },
+
+  -- ============================================================================
   -- EXPERIMENTAL FEATURES (DISABLED)
   -- ============================================================================
   -- Uncomment to test new completion engine

@@ -60,6 +60,9 @@ dofile(vim.g.base46_cache .. "statusline")
 require "options"    -- Editor options and settings
 require "autocmds"   -- Autocommands and event handlers
 
+-- Initialize winbar for function name display
+require("configs.winbar").setup()
+
 -- Schedule mappings to load after other configurations are complete
 vim.schedule(function()
   require "mappings"  -- Custom keymaps and shortcuts
